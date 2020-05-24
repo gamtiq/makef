@@ -1,0 +1,46 @@
+{
+  "name": "makef",
+  "version": "1.0.0",
+  "description": "A utility to create files inside specified directory",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint --cache --max-warnings 0 index.js \"src/**/*.js\"",
+    "lint-error": "eslint --cache index.js \"src/**/*.js\"",
+    "lint-all": "eslint --max-warnings 0 index.js \"src/**/*.js\"",
+    "lint-all-error": "eslint index.js \"src/**/*.js\"",
+    "test": "jest",
+    "check": "npm run lint && npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/gamtiq/makef.git"
+  },
+  "keywords": [
+    "utility",
+    "create",
+    "make",
+    "produce",
+    "file",
+    "files",
+    "directory",
+    "write",
+    "output",
+    "content",
+    "empty"
+  ],
+  "author": "Denis Sikuler",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gamtiq/makef/issues"
+  },
+  "homepage": "https://github.com/gamtiq/makef#readme",
+  "dependencies": {
+    "fs-extra": "8.x.x || 9.x.x"
+  },
+  "devDependencies": {
+    "eslint": "6.x.x || 7.0.x",
+    "eslint-config-guard": "1.1.x",
+    "husky": "^4.2.5",
+    "jest": "26.x.x"
+  }
+}
