@@ -1,7 +1,7 @@
 {
   "name": "makef",
   "version": "1.0.0",
-  "description": "A utility to create files inside specified directory",
+  "description": "Utilities to create files inside specified directory or copy files",
   "main": "index.js",
   "scripts": {
     "lint": "eslint --cache --max-warnings 0 index.js \"src/**/*.js\"",
@@ -18,6 +18,7 @@
   "keywords": [
     "utility",
     "create",
+    "copy",
     "make",
     "produce",
     "file",

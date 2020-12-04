@@ -2,12 +2,25 @@ const path = require('path');
 
 const fse = require('fs-extra');
 
+exports.fse = fse;
+
 function noop() {}
 
 const loggerStub = {
     error: noop,
     log: noop
 };
+
+function getLogger(options) {
+    const { logger } = options;
+
+    // eslint-disable-next-line no-nested-ternary
+    return logger === false
+        ? loggerStub
+        : (! logger || logger === true
+            ? console
+            : logger);
+}
 
 /**
  * Create specified files.
@@ -59,12 +72,7 @@ exports.createFile = function createFile(fileSet, settings) {
     const { context, data } = options;
     const dir = options.dir || '';
     const dirPath = path.resolve(dir);
-    // eslint-disable-next-line no-nested-ternary
-    const logger = options.logger === false
-        ? loggerStub
-        : (! options.logger || options.logger === true
-            ? console
-            : options.logger);
+    const logger = getLogger(options);
     const log = (logger.log || logger.info).bind(logger);
     const fileType = typeof fileSet;
     let result;
@@ -87,7 +95,8 @@ exports.createFile = function createFile(fileSet, settings) {
                         filePath,
                         dir,
                         dirPath,
-                        data
+                        data,
+                        logger
                     }
                 );
             }
@@ -123,4 +132,47 @@ exports.createFile = function createFile(fileSet, settings) {
     }
 
     return result;
+};
+
+/**
+ * Copy specified file.
+ *
+ * @param {string} sourceFile
+ *      Name/path of file that should be copied.
+ * @param {string} [destFile]
+ *      Name/path of destination file that should be created.
+ *      If the file is not set a partially applied function will be returned
+ *      that can be used to copy source file several times by passing a destination file and settings as arguments.
+ * @param {object} [settings]
+ *      Operation settings.
+ * @param {string} [settings.dir]
+ *      Directory where destination file should be created.
+ *      By default the current working directory is used.
+ * @param {boolean | object} [settings.logger=console]
+ *      An object having methods `log` (or `info`) and `error` that should be used for logging.
+ *      See the corresponding setting of {@link createFile} for details.
+ * @param {string} [settings.sourceDir]
+ *      Directory where source file is located.
+ */
+exports.copyFile = function copyFile(sourceFile, destFile, settings) {   // eslint-disable-line consistent-return
+    if (sourceFile) {
+        if (destFile) {
+            const options = settings || {};
+            const logger = getLogger(options);
+            const sourcePath = path.resolve(options.sourceDir || '', sourceFile);
+            const destPath = path.resolve(options.dir || '', destFile);
+            try {
+                fse.copySync(sourcePath, destPath, {overwrite: true});
+                logger.log(`file '${sourcePath}' is copied to '${destPath}'`);
+            }
+            catch (e) {
+                logger.error(`cannot copy file '${sourcePath}' to '${destPath}'; error details -\n${e}`);
+            }
+        }
+        else {
+            return function partialCopyFile(fileName, copySettings) {
+                return copyFile(sourceFile, fileName, copySettings);
+            };
+        }
+    }
 };

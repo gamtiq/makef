@@ -1,6 +1,6 @@
 # makef <a name="start"></a>
 
-A utility to create files inside specified directory.
+Utilities to create files inside specified directory or copy files.
 
 Features:
 * Create synchronously one file or several files at once.
@@ -8,6 +8,7 @@ Features:
 * It is possible to skip creating of some files by specifying `false`, `null` or `undefined` as content value.
 * Determine whether a file should be created and/or form a file content dynamically by using a function as value for the file.
 * Specify any correct path as a file name. The path will be resolved regarding current working directory. Any subdirectory will be automatically created.
+* Create a copy of another file by using `copyFile`.
 
 ```js
 // Create several files in current working directory
@@ -19,7 +20,9 @@ makef.createFile({
     // The following file will not be created
     'd.file': false,
     // The object that is specified as content will be converted to JSON
-    'file.json': {some: 'data'}
+    'file.json': {some: 'data'},
+    // The following file will be copied
+    'copy.data': makef.copyFile('../some/dir/source.file')
 });
 ```
 
@@ -42,7 +45,8 @@ Installation:
 Next in a module:
 
 ```js
-const createFile = require('makef').createFile;
+const makef = require('makef');
+const { createFile, copyFile } = makef;
 ```
 
 ## Examples <a name="examples"></a> [&#x2191;](#start)
@@ -70,7 +74,8 @@ createFile({
         a: 2,
         topics: ['home', 'docs'],
         url: 'http://some.server.net'
-    }
+    },
+    'subdir/another.log': makef.copyFile('./path/to/logs/data.log')
 });
 ```
 
@@ -128,11 +133,23 @@ createFile(
 );
 ```
 
+Copy a file:
+```js
+makef.copyFile(
+    'source.txt',
+    'data.txt',
+    {
+        sourceDir: './from/some/dir',
+        dir: '../target/data/dir'
+    }
+);
+```
+
 See additional examples in tests.
 
 ## API <a name="api"></a> [&#x2191;](#start)
 
-`createFile(fileSet, settings?): object`
+### `createFile(fileSet, settings?): object`
 
 Create specified files.
 
@@ -153,6 +170,8 @@ Arguments:
         or empty string.
     - `env.dirPath: string` - absolute path to directory where file should be created.
     - `env.filePath: string` - absolute path to file that should be created.
+    - `env.logger: object` - An object having methods `log` (or `info`) and `error` that can be used for logging.
+        See `settings.logger` below for details.
 
     A value returned from the function will be processed to form file content.
 
@@ -176,6 +195,25 @@ Returns object representing creation result, or `undefined` when `fileSet` is no
 Object fields are file names as specified in `fileSet`,
 a field value is absolute path of the corresponding file,
 or error object when the file is not created by some reason.
+
+### `copyFile(sourceFile, destFile?, settings?): Function | void`
+
+Copy specified file.
+
+Arguments:
+
+* `sourceFile: string` - Name/path of file that should be copied.
+* `destFile?: string` - Name/path of destination file that should be created.
+    If the file is not set a partially applied function will be returned
+    that can be used to copy source file several times by passing a destination file and settings as arguments.
+* `settings?: object` - Operation settings.
+* `settings.dir?: string` - Directory where destination file should be created.
+    By default the current working directory is used.
+* `settings.logger?: object` - An object having methods `log` (or `info`) and `error` that should be used for logging.
+    See the corresponding setting of `createFile` for details.
+* `settings.sourceDir?: string` - Directory where source file is located.
+
+Returns a partially applied function when `destFile` is not specified.
 
 ## Contributing <a name="contributing"></a> [&#x2191;](#start)
 In lieu of a formal style guide, take care to maintain the existing coding style.
