@@ -39,6 +39,7 @@ function getLogger(options) {
  *          or empty string.
  *      - `env.dirPath: string` - absolute path to directory where file should be created.
  *      - `env.filePath: string` - absolute path to file that should be created.
+ *      - `env.logger: object` - an object having methods `log` and `error` that should be used for logging.
  * 
  *      A value returned from the function will be processed to form file content.
  *      Content values (specified as a field value or returned from a function) are treated in the following way:

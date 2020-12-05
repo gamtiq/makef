@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Utilities to create files inside specified directory or copy files",
   "main": "index.js",
+  "types": "./index.d.ts",
   "scripts": {
     "lint": "eslint --cache --max-warnings 0 index.js \"src/**/*.js\"",
     "lint-error": "eslint --cache index.js \"src/**/*.js\"",
@@ -39,9 +40,10 @@
     "fs-extra": "8.x.x || 9.x.x"
   },
   "devDependencies": {
-    "eslint": "6.x.x || 7.0.x",
-    "eslint-config-guard": "1.1.x",
-    "husky": "^4.2.5",
-    "jest": "26.x.x"
+    "eslint": "^7.14.0",
+    "eslint-config-guard": "^2.0.1",
+    "eslint-plugin-node": "^11.1.0",
+    "husky": "^4.3.0",
+    "jest": "^26.6.3"
   }
 }
